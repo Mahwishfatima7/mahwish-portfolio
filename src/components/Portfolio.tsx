@@ -475,8 +475,17 @@ function Contact() {
           <a href="tel:+923283591747"><Phone size={17} /> +92 328 3591747</a>
           <p className="location">Karachi, Pakistan</p>
           <div className="social-links">
-            <span title="LinkedIn profile placeholder"><Network size={18} /> LinkedIn <small>soon</small></span>
-            <span title="GitHub profile placeholder"><Code2 size={18} /> GitHub <small>soon</small></span>
+            <a
+              href="https://www.linkedin.com/in/mahwishfatima-/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Connect on LinkedIn"
+            >
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor">
+                <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.61 0 4.27 2.37 4.27 5.46v6.28zM5.32 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zm1.78 13.02H3.54V9h3.56v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.21 0 22.23 0z" />
+              </svg>
+              Connect on LinkedIn
+            </a>
           </div>
         </motion.div>
         <motion.form className="contact-form" onSubmit={submit} initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.65, delay: 0.1 }}>

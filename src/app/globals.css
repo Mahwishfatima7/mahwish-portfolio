@@ -297,8 +297,9 @@ a { color: inherit; text-decoration: none; }
 .contact-copy > a { display:flex; align-items:center; gap:10px; margin:12px 0; color:#d2d0c8; font-size:14px; }
 .contact-copy .location { margin-top:24px; color:#8d8b84; font-size:12px; text-transform:uppercase; letter-spacing:.12em; }
 .social-links { display:flex; gap:12px; margin-top:28px; }
-.social-links span { display:flex; align-items:center; gap:7px; border:1px solid rgba(255,255,255,.14); border-radius:100px; padding:9px 12px; color:#d2d0c8; font-size:11px; }
-.social-links small { color:#77766f; }
+.social-links a { display:flex; align-items:center; gap:7px; border:1px solid rgba(255,255,255,.14); border-radius:100px; padding:9px 12px; color:#d2d0c8; font-size:11px; transition:border-color .25s ease,color .25s ease,transform .25s ease; }
+.social-links a:hover { transform:translateY(-2px); border-color:#f5a58f; color:#f5a58f; }
+.social-links a:focus-visible { outline:3px solid #f5a58f; outline-offset:4px; }
 .contact-form { display:grid; grid-template-columns:1fr 1fr; gap:22px 18px; }
 .contact-form label { display:flex; flex-direction:column; gap:9px; color:#aaa89f; font-size:11px; text-transform:uppercase; letter-spacing:.1em; }
 .contact-form label:nth-child(3), .contact-form label:nth-child(4) { grid-column:1/3; }
