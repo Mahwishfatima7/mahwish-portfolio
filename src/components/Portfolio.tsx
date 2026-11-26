@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import type { Variants } from "motion/react";
 import Image from "next/image";
+import emailjs from "@emailjs/browser";
 import {
   ArrowDown,
   ArrowUp,
@@ -451,18 +452,52 @@ function Education() {
 
 function Contact() {
   const [status, setStatus] = useState("");
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const [statusType, setStatusType] = useState<"success" | "error" | "sending" | "">("");
+  const [isSending, setIsSending] = useState(false);
+
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (isSending) return;
+
     const form = event.currentTarget;
     if (!form.checkValidity()) {
       form.reportValidity();
       return;
     }
+
     const data = new FormData(form);
-    const subject = encodeURIComponent(String(data.get("subject") || "Portfolio enquiry"));
-    const body = encodeURIComponent(`Name: ${data.get("name")}\nEmail: ${data.get("email")}\n\n${data.get("message")}`);
-    setStatus("Opening your email application...");
-    window.location.href = `mailto:mahwishfatima880@gmail.com?subject=${subject}&body=${body}`;
+    const name = String(data.get("name") || "").trim();
+    const email = String(data.get("email") || "").trim();
+    const subject = String(data.get("subject") || "").trim();
+    const message = String(data.get("message") || "").trim();
+
+    if (!name || !email || !subject || !message) {
+      setStatusType("error");
+      setStatus("Please complete every field before sending.");
+      return;
+    }
+
+    setIsSending(true);
+    setStatusType("sending");
+    setStatus("Sending your message...");
+
+    try {
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "",
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "",
+        { name, email, subject, message },
+        { publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || "" }
+      );
+      form.reset();
+      setStatusType("success");
+      setStatus("Your message has been sent successfully!");
+    } catch (error) {
+      console.error("EmailJS submission failed:", error);
+      setStatusType("error");
+      setStatus("Could not send your message. Please try again.");
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -489,12 +524,14 @@ function Contact() {
           </div>
         </motion.div>
         <motion.form className="contact-form" onSubmit={submit} initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.65, delay: 0.1 }}>
-          <label>Name<input name="name" type="text" placeholder="Your name" required /></label>
-          <label>Email<input name="email" type="email" placeholder="you@example.com" required /></label>
-          <label>Subject<input name="subject" type="text" placeholder="Project or opportunity" required /></label>
-          <label>Message<textarea name="message" rows={5} placeholder="Tell me about it..." required /></label>
-          <button className="button button-primary" type="submit">Send message <ArrowUpRight size={16} /></button>
-          <p className="form-status" role="status">{status}</p>
+          <label>Name<input name="name" type="text" placeholder="Your name" minLength={2} maxLength={80} required /></label>
+          <label>Email<input name="email" type="email" placeholder="you@example.com" maxLength={120} required /></label>
+          <label>Subject<input name="subject" type="text" placeholder="Project or opportunity" minLength={3} maxLength={150} required /></label>
+          <label>Message<textarea name="message" rows={5} placeholder="Tell me about it..." minLength={10} maxLength={2000} required /></label>
+          <button className="button button-primary" type="submit" disabled={isSending}>
+            {isSending ? "Sending..." : "Send message"} <ArrowUpRight size={16} />
+          </button>
+          <p className={`form-status ${statusType}`} role="status" aria-live="polite">{status}</p>
         </motion.form>
       </div>
     </section>
@@ -505,11 +542,9 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="footer-inner">
-        <a className="wordmark" href="#home"><span>MF</span><b>Mahwish<br />Fatima</b></a>
-        <div className="footer-nav">{navigation.map((item) => <a href={item.href} key={item.href}>{item.label}</a>)}</div>
+        <div className="copyright">© 2026 Mahwish Fatima. All rights reserved.</div>
         <button type="button" className="back-top" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Back to top"><ArrowUp size={18} /></button>
       </div>
-      <div className="copyright">© 2026 Mahwish Fatima. All rights reserved.</div>
     </footer>
   );
 }
